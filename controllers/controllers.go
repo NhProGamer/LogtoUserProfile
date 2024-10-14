@@ -17,19 +17,21 @@ func Home(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 	logtoClient := client.NewLogtoClient(getLogtoConfig(), &storage.SessionStorage{Session: session})
 
-	authState := "You are not logged in to this website. :("
 	if logtoClient.IsAuthenticated() {
-		authState = "You are logged in to this website! :)"
+		idTokenClaims, err := logtoClient.GetIdTokenClaims()
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+
+		ctx.HTML(http.StatusOK, "index.html", gin.H{
+			"name":           idTokenClaims.Name,
+			"username":       idTokenClaims.Username,
+			"email":          idTokenClaims.Email,
+			"profilePicture": idTokenClaims.Picture,
+		})
+	} else {
+		ctx.Redirect(http.StatusTemporaryRedirect, "/sign-in")
 	}
-
-	homePage := `<h1>Hello Logto</h1>` +
-		"<div>" + authState + "</div>" +
-		`<div><a href="/sign-in">Sign In</a></div>` +
-		`<div><a href="/sign-out">Sign Out</a></div>` +
-		`<div><a href="/user-id-token-claims">ID Token Claims</a></div>` +
-		`<div><a href="/protected">Protected Resource</a></div>`
-
-	ctx.Data(http.StatusOK, ContentTypeHtml, []byte(homePage))
 }
 
 func SignIn(ctx *gin.Context) {
@@ -59,14 +61,19 @@ func SignInCallback(ctx *gin.Context) {
 func UserIdTokenClaims(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 	logtoClient := client.NewLogtoClient(getLogtoConfig(), &storage.SessionStorage{Session: session})
-
-	idTokenClaims, err := logtoClient.GetIdTokenClaims()
+	userInfo, err := logtoClient.FetchUserInfo()
 	if err != nil {
 		ctx.String(http.StatusOK, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, idTokenClaims)
+	/*idTokenClaims, err := logtoClient.GetIdTokenClaims()
+	if err != nil {
+		ctx.String(http.StatusOK, err.Error())
+		return
+	}*/
+
+	ctx.JSON(http.StatusOK, userInfo)
 }
 
 func SignOut(ctx *gin.Context) {
@@ -109,5 +116,6 @@ func getLogtoConfig() *client.LogtoConfig {
 		Endpoint:  globals.Configuration.Logto.Endpoint,
 		AppId:     globals.Configuration.Logto.AppId,
 		AppSecret: globals.Configuration.Logto.AppSecret,
+		Scopes:    []string{"email", "profile", "custom_data", "identities", "family_name", "familyName"},
 	}
 }
