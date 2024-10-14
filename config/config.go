@@ -1,6 +1,8 @@
 package config
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"gopkg.in/yaml.v3"
 	"log"
 	"os"
@@ -10,6 +12,7 @@ import (
 type Config struct {
 	Server  ServerConfig  `yaml:"server"`
 	Storage StorageConfig `yaml:"storage"`
+	Logto   LogtoConfig   `yaml:"logto"`
 	Debug   bool          `yaml:"debug"`
 }
 
@@ -17,6 +20,7 @@ type Config struct {
 type ServerConfig struct {
 	Host           string   `yaml:"host"`
 	Port           int      `yaml:"port"`
+	Secret         string   `yaml:"secret"`
 	ServerURL      string   `yaml:"server_url"`
 	TrustedProxies []string `yaml:"trusted_proxies"`
 }
@@ -31,59 +35,54 @@ type StorageConfig struct {
 	Directory string `yaml:"directory"`
 }
 
-var Configuration *Config
-
-func LoadConfig() {
-	exist, err := DoesExistFile("config.yaml")
+func LoadConfig() (Config, error) {
+	exist, err := doesExistFile("config.yaml")
 	if err != nil {
-		log.Fatal(err)
+		return Config{}, err
 	}
 	if !exist {
-		err := writeConfig(Config{
+		log.Println("No config file found ! Writing a config file...")
+		secret, err := generateRandomSecret(256)
+		if err != nil {
+			return Config{}, err
+		}
+		err = writeConfig(Config{
 			Server: ServerConfig{
-				Host:           "127.0.0.1",
-				Port:           8080,
-				ServerURL:      "http://127.0.0.1:8080",
+				Host:           "localhost",
+				Port:           5000,
+				Secret:         secret,
+				ServerURL:      "http://localhost:5000",
 				TrustedProxies: []string{},
 			},
-			JWT: JWTConfig{
-				Secret: "ASuperSecretSecretlyHiddenThatNobodyKnows",
-			},
-			Argon: ArgonConfig{
-				Salt:        "ASuperSaltForArgon2idHashFunction",
-				Parallelism: 2,
-				Memory:      64,
-				Iterations:  2,
-				HashLenght:  32,
-			},
-			Database: DatabaseConfig{
-				ServerURL:    "mongodb://mongouser:mongopass@localhost:27017",
-				DatabaseName: "nebulogo",
-			},
 			Storage: StorageConfig{
-				Directory: "storage",
+				Directory: "user-data",
+			},
+			Logto: LogtoConfig{
+				Endpoint:  "",
+				AppId:     "",
+				AppSecret: "",
 			},
 			Debug: false,
 		})
 		if err != nil {
-			log.Fatal(err)
+			return Config{}, err
 		}
 	}
 
 	// Read YAML file
 	data, err := os.ReadFile("config.yaml")
 	if err != nil {
-		log.Fatalf("error reading YAML file: %v", err)
+		return Config{}, err
 	}
 
 	// Unmarshal YAML data into Config struct
 	var config Config
 	err = yaml.Unmarshal(data, &config)
 	if err != nil {
-		log.Fatalf("error unmarshalling YAML: %v", err)
+		return Config{}, err
 	}
 
-	Configuration = &config
+	return config, nil
 }
 
 func writeConfig(config Config) error {
@@ -102,12 +101,25 @@ func writeConfig(config Config) error {
 	return nil
 }
 
-func DoesExistFile(filename string) (bool, error) {
-	if _, err := os.Stat(filename); err == nil {
+func doesExistFile(file string) (bool, error) {
+	if _, err := os.Stat(file); err == nil {
 		return true, nil
 	} else if os.IsNotExist(err) {
 		return false, nil
 	} else {
 		return false, err
 	}
+}
+
+func generateRandomSecret(length int) (string, error) {
+	// Create a byte slice to hold the random data
+	bytes := make([]byte, length)
+	_, err := rand.Read(bytes)
+	if err != nil {
+		return "", err
+	}
+
+	// Convert the bytes to a hex string
+	secret := hex.EncodeToString(bytes)
+	return secret, nil
 }
