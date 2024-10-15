@@ -70,13 +70,17 @@ func UserProfile(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 	logtoClient := client.NewLogtoClient(getLogtoConfig(), &storage.SessionStorage{Session: session})
 
-	userInfos, err := utils.FetchUserInfos(logtoClient, getLogtoConfig())
-	if err != nil {
-		ctx.String(http.StatusInternalServerError, err.Error())
-		return
-	}
+	if logtoClient.IsAuthenticated() {
+		userInfos, err := utils.FetchUserInfos(logtoClient, getLogtoConfig())
+		if err != nil {
+			ctx.String(http.StatusInternalServerError, err.Error())
+			return
+		}
 
-	ctx.JSON(http.StatusOK, userInfos)
+		ctx.JSON(http.StatusOK, userInfos)
+	} else {
+		ctx.String(http.StatusForbidden, "")
+	}
 }
 
 func SignOut(ctx *gin.Context) {
