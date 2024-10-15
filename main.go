@@ -33,7 +33,13 @@ func main() {
 	} else {
 		gin.SetMode(gin.ReleaseMode)
 	}
+
 	router := gin.Default()
+	err = router.SetTrustedProxies(globals.Configuration.Server.TrustedProxies)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	router.LoadHTMLGlob("templates/*")
 	router.Use(sessions.Sessions("logto-session", store))
 
