@@ -19,6 +19,11 @@ func main() {
 	}
 
 	store := memstore.NewStore([]byte(globals.Configuration.Server.Secret))
+	if globals.Configuration.Debug {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
 	router.Use(sessions.Sessions("logto-session", store))
