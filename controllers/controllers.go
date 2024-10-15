@@ -66,7 +66,7 @@ func SignInCallback(ctx *gin.Context) {
 	ctx.Redirect(http.StatusTemporaryRedirect, "/")
 }
 
-func UserIdTokenClaims(ctx *gin.Context) {
+func UserProfile(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 	logtoClient := client.NewLogtoClient(getLogtoConfig(), &storage.SessionStorage{Session: session})
 
@@ -90,28 +90,6 @@ func SignOut(ctx *gin.Context) {
 	}
 
 	ctx.Redirect(http.StatusTemporaryRedirect, signOutUri)
-}
-
-func Protected(ctx *gin.Context) {
-	session := sessions.Default(ctx)
-	logtoClient := client.NewLogtoClient(getLogtoConfig(), &storage.SessionStorage{Session: session})
-
-	if logtoClient.IsAuthenticated() {
-		protectedPage := `
-		<h1>Authenticated</h1>
-		<div>Protected content</div>
-		<div><a href="/">Home</a></div>
-		`
-		ctx.Data(http.StatusOK, ContentTypeHtml, []byte(protectedPage))
-		return
-	}
-
-	unauthorizedPage := `
-	<h1>Unauthorized</h1>
-	<div>You cannot visit the protected content</div>
-	<div><a href="/">Home</a></div>
-	`
-	ctx.Data(http.StatusOK, ContentTypeHtml, []byte(unauthorizedPage))
 }
 
 func getLogtoConfig() *client.LogtoConfig {
