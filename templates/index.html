@@ -28,7 +28,7 @@
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-300">Prénom</label>
             <div class="flex justify-between items-center">
-                <p class="text-gray-200">Name</p>
+                <p class="text-gray-200">{{ .givenName }}</p>
                 <button class="text-indigo-400 hover:underline">Modifier</button>
             </div>
         </div>
@@ -36,7 +36,7 @@
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-300">Nom de famille</label>
             <div class="flex justify-between items-center">
-                <p class="text-gray-200">Family Name</p>
+                <p class="text-gray-200">{{ .familyName }}</p>
                 <button class="text-indigo-400 hover:underline">Modifier</button>
             </div>
         </div>

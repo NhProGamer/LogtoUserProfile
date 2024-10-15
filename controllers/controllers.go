@@ -3,9 +3,11 @@ package controllers
 import (
 	"LogtoUserProfile/globals"
 	"LogtoUserProfile/storage"
+	"LogtoUserProfile/utils"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/logto-io/go/client"
+	"github.com/logto-io/go/core"
 	"net/http"
 )
 
@@ -18,16 +20,19 @@ func Home(ctx *gin.Context) {
 	logtoClient := client.NewLogtoClient(getLogtoConfig(), &storage.SessionStorage{Session: session})
 
 	if logtoClient.IsAuthenticated() {
-		idTokenClaims, err := logtoClient.GetIdTokenClaims()
+		userInfos, err := utils.FetchUserInfos(logtoClient, getLogtoConfig())
 		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			ctx.String(http.StatusInternalServerError, err.Error())
+			return
 		}
 
 		ctx.HTML(http.StatusOK, "index.html", gin.H{
-			"name":           idTokenClaims.Name,
-			"username":       idTokenClaims.Username,
-			"email":          idTokenClaims.Email,
-			"profilePicture": idTokenClaims.Picture,
+			"name":           userInfos.Name,
+			"username":       userInfos.Username,
+			"email":          userInfos.Email,
+			"profilePicture": userInfos.Picture,
+			"givenName":      userInfos.GivenName,
+			"familyName":     userInfos.FamilyName,
 		})
 	} else {
 		ctx.Redirect(http.StatusTemporaryRedirect, "/sign-in")
@@ -37,6 +42,9 @@ func Home(ctx *gin.Context) {
 func SignIn(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 	logtoClient := client.NewLogtoClient(getLogtoConfig(), &storage.SessionStorage{Session: session})
+	/*signInUri, err := logtoClient.SignIn(&client.SignInOptions{
+		RedirectUri: globals.Configuration.Server.ServerURL + "/sign-in-callback",
+	})*/
 	signInUri, err := logtoClient.SignIn(globals.Configuration.Server.ServerURL + "/sign-in-callback")
 	if err != nil {
 		ctx.String(http.StatusInternalServerError, err.Error())
@@ -61,19 +69,14 @@ func SignInCallback(ctx *gin.Context) {
 func UserIdTokenClaims(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 	logtoClient := client.NewLogtoClient(getLogtoConfig(), &storage.SessionStorage{Session: session})
-	userInfo, err := logtoClient.FetchUserInfo()
+
+	userInfos, err := utils.FetchUserInfos(logtoClient, getLogtoConfig())
 	if err != nil {
-		ctx.String(http.StatusOK, err.Error())
+		ctx.String(http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	/*idTokenClaims, err := logtoClient.GetIdTokenClaims()
-	if err != nil {
-		ctx.String(http.StatusOK, err.Error())
-		return
-	}*/
-
-	ctx.JSON(http.StatusOK, userInfo)
+	ctx.JSON(http.StatusOK, userInfos)
 }
 
 func SignOut(ctx *gin.Context) {
@@ -116,6 +119,6 @@ func getLogtoConfig() *client.LogtoConfig {
 		Endpoint:  globals.Configuration.Logto.Endpoint,
 		AppId:     globals.Configuration.Logto.AppId,
 		AppSecret: globals.Configuration.Logto.AppSecret,
-		Scopes:    []string{"email", "profile", "custom_data", "identities", "family_name", "familyName"},
+		Scopes:    []string{core.UserScopeProfile, core.UserScopeCustomData, core.UserScopeEmail, core.ReservedScopeOpenId, "family_name", "familyName"},
 	}
 }
