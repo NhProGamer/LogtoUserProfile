@@ -26,9 +26,11 @@ type ServerConfig struct {
 }
 
 type LogtoConfig struct {
-	Endpoint  string `yaml:"endpoint"`
-	AppId     string `yaml:"app_id"`
-	AppSecret string `yaml:"app_secret"`
+	Endpoint     string `yaml:"endpoint"`
+	AppId        string `yaml:"app_id"`
+	AppSecret    string `yaml:"app_secret"`
+	M2MAppId     string `yaml:"m2m_app_id"`
+	M2MAppSecret string `yaml:"m2m_app_secret"`
 }
 
 type StorageConfig struct {
@@ -58,9 +60,11 @@ func LoadConfig() (Config, error) {
 				Directory: "user-data",
 			},
 			Logto: LogtoConfig{
-				Endpoint:  "",
-				AppId:     "",
-				AppSecret: "",
+				Endpoint:     "",
+				AppId:        "",
+				AppSecret:    "",
+				M2MAppId:     "",
+				M2MAppSecret: "",
 			},
 			Debug: false,
 		})
