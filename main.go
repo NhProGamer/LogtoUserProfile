@@ -45,5 +45,8 @@ func main() {
 
 	routes.RegisterRoutes(router)
 
-	router.Run(globals.Configuration.Server.Host + ":" + strconv.Itoa(globals.Configuration.Server.Port))
+	err = router.Run(globals.Configuration.Server.Host + ":" + strconv.Itoa(globals.Configuration.Server.Port))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
