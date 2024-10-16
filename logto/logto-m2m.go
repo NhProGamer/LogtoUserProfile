@@ -10,6 +10,17 @@ import (
 	"time"
 )
 
+type ProfilePayload struct {
+	GivenName  string `json:"givenName,omitempty"`
+	FamilyName string `json:"familyName,omitempty"`
+}
+
+type PatchProfilePayload struct {
+	Profile ProfilePayload `json:"profile,omitempty"`
+	Avatar  string         `json:"avatar,omitempty"`
+	Name    string         `json:"name,omitempty"`
+}
+
 var accessToken struct {
 	Token      string
 	ExpiryDate int64
@@ -63,4 +74,39 @@ func getAccessToken() (string, error) {
 	accessToken.ExpiryDate = actualTime + responseJSON.ExpiresIn
 
 	return accessToken.Token, nil
+}
+
+func PatchUserProfile(sub, string, payload PatchProfilePayload) error {
+	token, err := getAccessToken()
+	if err != nil {
+		return err
+	}
+	jsonPayload, err := json.Marshal(payload)
+	if err != nil {
+		return err
+	}
+	endpoint, err := url.JoinPath(globals.Configuration.Logto.Endpoint, "/api/users/")
+	if err != nil {
+		return err
+	}
+	request, err := http.NewRequest("PATCH", endpoint, bytes.NewBuffer(jsonPayload))
+	if err != nil {
+		return err
+	}
+	request.Header.Add("Authorization", "Bearer "+token)
+	request.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(request)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Vérifier la réponse
+	if resp.StatusCode == http.StatusOK {
+		return nil
+	} else {
+		return errors.New(resp.Status)
+	}
 }
