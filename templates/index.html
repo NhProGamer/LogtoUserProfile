@@ -5,6 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Utilisateur</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script defer>
+        function editProperty(id) {
+            const paragraphe = document.getElementById(id)
+            const bouton = document.getElementById(id + "-btn")
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = paragraphe.textContent; // On met le texte du paragraphe dans l'input
+            input.id = id;
+            paragraphe.parentNode.replaceChild(input, paragraphe);
+            bouton.onclick = function() {
+                validateProperty(id);
+            };
+            bouton.innerText = "Valider"
+        }
+
+        function validateProperty(id) {
+            const classes = ['text-gray-800', 'dark:text-gray-200'];
+            const input = document.getElementById(id)
+            const bouton = document.getElementById(id + "-btn")
+            const paragraphe = document.createElement('p');
+            paragraphe.classList.add(...classes);
+            paragraphe.innerText = input.value; // On met le texte du paragraphe dans l'input
+            paragraphe.id = id;
+            input.parentNode.replaceChild(paragraphe, input);
+            bouton.onclick = function() {
+                editProperty(id);
+            };
+            bouton.innerText = "Modifier"
+        }
+    </script>
 </head>
 <body class="bg-white dark:bg-gray-900 flex justify-center items-center h-screen">
 <div class="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg">
@@ -20,24 +50,24 @@
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nom d'affichage</label>
             <div class="flex justify-between items-center">
-                <p class="text-gray-800 dark:text-gray-200">{{ .name }}</p>
-                <button class="text-indigo-500 dark:text-indigo-400 hover:underline">Modifier</button>
+                <p id="name" class="text-gray-800 dark:text-gray-200">{{ .name }}</p>
+                <button id="name-btn" class="text-indigo-500 dark:text-indigo-400 hover:underline" onclick="editProperty('name')">Modifier</button>
             </div>
         </div>
 
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Prénom</label>
             <div class="flex justify-between items-center">
-                <p class="text-gray-800 dark:text-gray-200">{{ .givenName }}</p>
-                <button class="text-indigo-500 dark:text-indigo-400 hover:underline">Modifier</button>
+                <p id="givenName" class="text-gray-800 dark:text-gray-200">{{ .givenName }}</p>
+                <button id="givenName-btn" class="text-indigo-500 dark:text-indigo-400 hover:underline" onclick="editProperty('givenName')">Modifier</button>
             </div>
         </div>
 
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nom de famille</label>
             <div class="flex justify-between items-center">
-                <p class="text-gray-800 dark:text-gray-200">{{ .familyName }}</p>
-                <button class="text-indigo-500 dark:text-indigo-400 hover:underline">Modifier</button>
+                <p id="familyName" class="text-gray-800 dark:text-gray-200">{{ .familyName }}</p>
+                <button id="familyName-btn" class="text-indigo-500 dark:text-indigo-400 hover:underline" onclick="editProperty('familyName')">Modifier</button>
             </div>
         </div>
 

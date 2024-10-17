@@ -76,7 +76,7 @@ func getAccessToken() (string, error) {
 	return accessToken.Token, nil
 }
 
-func PatchUserProfile(sub, string, payload PatchProfilePayload) error {
+func PatchUserProfile(sub string, payload PatchProfilePayload) error {
 	token, err := getAccessToken()
 	if err != nil {
 		return err
