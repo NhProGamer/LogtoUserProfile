@@ -1,139 +1,99 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Utilisateur</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        .slide-up {
-            transform: translateY(100%);
-            transition: transform 0.5s;
-        }
-        .slide-up.show {
-            transform: translateY(0);
-        }
-    </style>
-
+    <title>Profil utilisateur</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-white dark:bg-gray-900 flex justify-center items-center h-screen">
-<div class="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg">
-    <div class="flex items-center mb-4">
-        <img src="{{ .profilePicture }}" alt="Photo de profil" class="h-20 w-20 rounded-full border-2 dark:border-green-400 border-green-500">
-        <div class="ml-4">
-            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">{{ .name }}</h2>
-            <p class="text-gray-500 dark:text-gray-400">{{ .username }}</p>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex justify-center items-center">
+<div class="flex bg-white dark:bg-gray-800 shadow-lg rounded-lg max-w-6xl w-full">
+    <!-- Sidebar -->
+    <div class="w-1/4 p-6 border-r border-gray-200 dark:border-gray-700">
+        <div class="flex flex-col items-center">
+            <img class="w-24 h-24 rounded-full" src="{{.profilePicture}}" alt="Profile Picture">
+            <h1 class="mt-4 text-xl font-bold">{{.name}}</h1>
+            <p class="text-gray-600 dark:text-gray-400">{{.username}}</p>
         </div>
+        <nav class="mt-8">
+            <ul class="space-y-2">
+                <li class="flex items-center space-x-3 bg-gray-300 dark:bg-gray-900 p-3 rounded-md">
+                    <span>👤</span>
+                    <p>Profile</p>
+                </li>
+                <li class="flex items-center space-x-3 bg-gray-100 dark:bg-gray-700 p-3 rounded-md">
+                    <span>🔒</span>
+                    <p>Sécurité</p>
+                </li>
+                <li class="flex items-center space-x-3 bg-gray-100 dark:bg-gray-700 p-3 rounded-md">
+                    <span>🌐</span>
+                    <p>Connections</p>
+                </li>
+            </ul>
+        </nav>
     </div>
 
-    <div class="border-t border-gray-300 dark:border-gray-600 pt-4">
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nom d'affichage</label>
-            <div class="flex justify-between items-center">
-                <p id="name" class="text-gray-800 dark:text-gray-200">{{ .name }}</p>
-                <button id="name-btn" class="text-indigo-500 dark:text-indigo-400 hover:underline" onclick="editProperty('name')">Modifier</button>
+    <!-- Main Content -->
+    <div class="w-3/4 p-6">
+        <h2 class="text-xl font-semibold">Modifier le profil utilisateur</h2>
+        <form class="mt-4 space-y-4">
+            <div>
+                <label for="displayName" class="block text-sm font-medium">Nom d'affichage</label>
+                <input type="text" id="displayName" name="displayName" class="mt-1 block w-full p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none" placeholder="{{.name}}" value="{{.name}}" required>
             </div>
-        </div>
-
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Prénom</label>
-            <div class="flex justify-between items-center">
-                <p id="givenName" class="text-gray-800 dark:text-gray-200">{{ .givenName }}</p>
-                <button id="givenName-btn" class="text-indigo-500 dark:text-indigo-400 hover:underline" onclick="editProperty('givenName')">Modifier</button>
+            <div>
+                <label for="firstName" class="block text-sm font-medium">Prénom</label>
+                <input type="text" id="firstName" name="firstName" class="mt-1 block w-full p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none" placeholder="{{.givenName}}" value="{{.givenName}}" required>
             </div>
-        </div>
-
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nom de famille</label>
-            <div class="flex justify-between items-center">
-                <p id="familyName" class="text-gray-800 dark:text-gray-200">{{ .familyName }}</p>
-                <button id="familyName-btn" class="text-indigo-500 dark:text-indigo-400 hover:underline" onclick="editProperty('familyName')">Modifier</button>
+            <div>
+                <label for="lastName" class="block text-sm font-medium">Nom de famille</label>
+                <input type="text" id="lastName" name="lastName" class="mt-1 block w-full p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none" placeholder="{{.familyName}}" value="{{.familyName}}" required>
             </div>
-        </div>
-
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">E-mail</label>
-            <div class="flex justify-between items-center">
-                <p class="text-gray-800 dark:text-gray-200">{{ .email }}</p>
+            <div class="flex justify-end mt-4">
+                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Enregistrer les modifications</button>
             </div>
-        </div>
+        </form>
 
-        <!--<div class="flex justify-between mt-6">
-            <button class="bg-red-500 dark:bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-400 dark:hover:bg-red-500">Supprimer</button>
-            <button class="bg-indigo-500 dark:bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-400 dark:hover:bg-indigo-500">Enregistrer</button>
-        </div>-->
-    </div>
-</div>
-<div id="popup" class="hidden fixed bottom-0 left-0 w-full bg-gray-100 text-black p-4 flex justify-between items-center">
-    <span>Attention! Informations non enregistrés</span>
-    <div>
-        <button id="buttonA" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Enregistrer</button>
-        <button id="buttonB" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Réinitialiser</button>
     </div>
 </div>
-
 </body>
 <script>
-    let popupOpened = false
-    attributs = {
-        "name": document.getElementById("name").innerText,
-        "givenName": document.getElementById("givenName").innerText,
-        "familyName": document.getElementById("familyName").innerText
-    }
+    document.querySelector('form').addEventListener('submit', function (event) {
+        event.preventDefault(); // Empêche le rechargement de la page
 
-    function editProperty(id) {
-        const paragraphe = document.getElementById(id)
-        const bouton = document.getElementById(id + "-btn")
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.value = paragraphe.textContent;
-        input.id = id;
-        paragraphe.parentNode.replaceChild(input, paragraphe);
-        bouton.onclick = function() {
-            validateProperty(id);
-        };
-        bouton.innerText = "Valider"
-    }
+        // Récupère les valeurs des champs du formulaire
+        const displayName = document.getElementById('displayName').value;
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
 
-    function validateProperty(id) {
-        const input = document.getElementById(id)
-        const bouton = document.getElementById(id + "-btn")
-        const paragraphe = document.createElement('p');
-        paragraphe.innerText = input.value;
-        paragraphe.id = id;
-        input.parentNode.replaceChild(paragraphe, input);
-        bouton.onclick = function() {
-            editProperty(id);
-        };
-        bouton.innerText = "Modifier"
-        if (attributs[id] !== input.value && !popupOpened) {
-            showPopup().then((choice) => {
-                console.log(`Choix: ${choice}`);
-            });
-        }
-    }
-    function showPopup() {
-        return new Promise((resolve) => {
-            popupOpened = true
-            const popup = document.getElementById('popup');
-            const buttonA = document.getElementById('buttonA');
-            const buttonB = document.getElementById('buttonB');
-
-            // Afficher la popup avec animation
-            popup.classList.remove('hidden');
-            popup.classList.add('slide-up', 'show');
-
-            // Gestion des clics des boutons
-            buttonA.onclick = () => {
-                popup.classList.remove('show');
-                resolve(true);
-            };
-
-            buttonB.onclick = () => {
-                popup.classList.remove('show');
-                resolve(false);
-            };
+        // Crée l'objet de données à envoyer
+        const params = new URLSearchParams({
+            "name": displayName,
+            "given_name": firstName,
+            "family_name": lastName
         });
-    }
+
+        // Envoie une requête PATCH
+        fetch(`/api/v1/userprofile/?${params.toString()}`, { // Remplacez l'URL par celle de votre API
+            method: 'PATCH',
+            credentials: 'include'
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('Erreur lors de la mise à jour des données');
+                }
+            })
+            .then(data => {
+                console.log('Mise à jour réussie:', data);
+                // Afficher un message de succès ou rediriger l'utilisateur si nécessaire
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                // Afficher un message d'erreur à l'utilisateur
+            });
+    });
+
 </script>
 </html>
