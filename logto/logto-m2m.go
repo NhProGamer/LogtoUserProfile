@@ -21,6 +21,11 @@ type PatchProfilePayload struct {
 	Name    string         `json:"name,omitempty"`
 }
 
+type PatchProfilePayloadLite struct {
+	Avatar string `json:"avatar,omitempty"`
+	Name   string `json:"name,omitempty"`
+}
+
 var accessToken struct {
 	Token      string
 	ExpiryDate int64
@@ -76,7 +81,7 @@ func getAccessToken() (string, error) {
 	return accessToken.Token, nil
 }
 
-func PatchUserProfile(sub string, payload PatchProfilePayload) error {
+func PatchUserProfile(sub string, payload interface{}) error {
 	token, err := getAccessToken()
 	if err != nil {
 		return err
@@ -85,7 +90,7 @@ func PatchUserProfile(sub string, payload PatchProfilePayload) error {
 	if err != nil {
 		return err
 	}
-	endpoint, err := url.JoinPath(globals.Configuration.Logto.Endpoint, "/api/users/")
+	endpoint, err := url.JoinPath(globals.Configuration.Logto.Endpoint, "/api/users/", sub)
 	if err != nil {
 		return err
 	}
