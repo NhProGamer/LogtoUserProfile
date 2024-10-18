@@ -11,9 +11,9 @@
 text-center rounded-lg p-4 fixed z-50 left-1/2 transform -translate-x-1/2 top-8 text-lg transition-opacity duration-500
 shadow-[0_0_0_1px_rgba(144,238,144,1),0_0_100px_8px_rgba(144,238,144,0.2)]"></div>
 
-<div class="flex bg-white dark:bg-gray-800 shadow-lg rounded-lg max-w-6xl w-full">
+<div class="flex flex-col md:flex-row bg-white dark:bg-gray-800 shadow-lg rounded-lg max-w-6xl w-full">
     <!-- Sidebar -->
-    <div class="w-1/4 p-6 border-r border-gray-200 dark:border-gray-700">
+    <div class="md:w-1/4 p-6 border-b md:border-r border-gray-200 dark:border-gray-700">
         <div class="flex flex-col items-center">
             <img class="w-24 h-24 rounded-full" src="{{.profilePicture}}" alt="Profile Picture">
             <h1 class="mt-4 text-xl font-bold">{{.name}}</h1>
@@ -38,7 +38,7 @@ shadow-[0_0_0_1px_rgba(144,238,144,1),0_0_100px_8px_rgba(144,238,144,0.2)]"></di
     </div>
 
     <!-- Main Content -->
-    <div class="w-3/4 p-6">
+    <div class="md:w-3/4 p-6">
         <h2 class="text-xl font-semibold">Modifier le profil utilisateur</h2>
         <form class="mt-4 space-y-4">
             <div>
@@ -57,7 +57,6 @@ shadow-[0_0_0_1px_rgba(144,238,144,1),0_0_100px_8px_rgba(144,238,144,0.2)]"></di
                 <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Enregistrer les modifications</button>
             </div>
         </form>
-
     </div>
 </div>
 </body>
@@ -129,8 +128,5 @@ shadow-[0_0_0_1px_rgba(144,238,144,1),0_0_100px_8px_rgba(144,238,144,0.2)]"></di
             }, 500); // Correspond à la durée de la transition de fade out
         }, 7600); // 7.6 secondes pour le temps d'affichage
     }
-
-
-
 </script>
 </html>
