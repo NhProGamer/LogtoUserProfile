@@ -7,9 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex justify-center items-center">
-<div id="toast" class="hidden min-w-[250px] mx-auto dark:bg-gray-800 dark:text-white bg-gray-300 dark:text-black
-text-center rounded-lg p-4 fixed z-50 left-1/2 transform -translate-x-1/2 top-8 text-lg transition-opacity duration-500
-shadow-[0_0_0_1px_rgba(144,238,144,1),0_0_100px_8px_rgba(144,238,144,0.2)]"></div>
+<div id="toast" class="hidden min-w-[250px] mx-auto dark:bg-gray-800 dark:text-white bg-gray-300 text-center rounded-lg p-4 fixed z-50 left-1/2 transform -translate-x-1/2 top-8 text-lg transition-opacity duration-500"></div>
 
 <div class="flex flex-col md:flex-row bg-white dark:bg-gray-800 shadow-lg rounded-lg max-w-6xl w-full">
     <!-- Sidebar -->
@@ -89,10 +87,10 @@ shadow-[0_0_0_1px_rgba(144,238,144,1),0_0_100px_8px_rgba(144,238,144,0.2)]"></di
                 }
             })
             .then(data => {
-                showToast("Profil mit a jour!", 'green');
+                showToast("Profil mis à jour !", 'green');
             })
             .catch(error => {
-                showToast("Erreur " + error, 'red');
+                showToast("Erreur : " + error, 'red');
             });
     });
 
@@ -100,33 +98,28 @@ shadow-[0_0_0_1px_rgba(144,238,144,1),0_0_100px_8px_rgba(144,238,144,0.2)]"></di
         const toast = document.getElementById('toast');
         toast.textContent = message;
         toast.classList.remove('hidden');
-        toast.classList.add('opacity-0');
 
         // Définir la couleur d'accent
-        const colorValue = color === 'red' ?
-            'rgba(255, 99, 71, 1), rgba(255, 99, 71, 0.2)' : // Couleur rouge
-            'rgba(144, 238, 144, 1), rgba(144, 238, 144, 0.2)'; // Couleur verte
+        const colorValue = {
+            'red' : 'shadow-[0_0_0_1px_rgba(255,99,71,1),0_0_100px_8px_rgba(255,99,71,0.2)]', // Couleur rouge
+            'green': 'shadow-[0_0_0_1px_rgba(144,238,144,1),0_0_100px_8px_rgba(144,238,144,0.2)]' // Couleur verte
+        };
 
         // Appliquer l'ombre personnalisée avec la couleur choisie
-        toast.style.boxShadow = `0 0 0 1px ${colorValue.split(',')[0]}, 0 0 100px 8px ${colorValue.split(',')[1]}`;
+        toast.classList.add(colorValue[color])
 
         // Fade in
-        toast.style.transition = 'opacity 0.5s ease-in';
-        setTimeout(() => {
-            toast.classList.remove('opacity-0');
-            toast.classList.add('opacity-100');
-        }, 10);
+        toast.style.opacity = '1';
 
         // Fade out after a delay
         setTimeout(() => {
-            toast.classList.remove('opacity-100');
-            toast.classList.add('opacity-0');
-
+            toast.style.opacity = '0';
             // Hide the toast after fading out
             setTimeout(() => {
                 toast.classList.add('hidden');
-            }, 500); // Correspond à la durée de la transition de fade out
-        }, 7600); // 7.6 secondes pour le temps d'affichage
+                toast.classList.remove(colorValue[color])
+            }, 500);
+        }, 4500);
     }
 </script>
 </html>
