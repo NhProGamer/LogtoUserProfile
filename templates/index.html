@@ -14,7 +14,7 @@
     <div class="md:w-1/4 p-6 border-b md:border-r border-gray-200 dark:border-gray-700">
         <div class="flex flex-col items-center">
             <img class="w-24 h-24 rounded-full" src="{{.profilePicture}}" alt="Profile Picture">
-            <h1 class="mt-4 text-xl font-bold">{{.name}}</h1>
+            <h1 id="displayNameInfo" class="mt-4 text-xl font-bold">{{.name}}</h1>
             <p class="text-gray-600 dark:text-gray-400">{{.username}}</p>
         </div>
         <nav class="mt-8">
@@ -75,7 +75,7 @@
         });
 
         // Envoie une requête PATCH
-        fetch(`/api/v1/userprofile/?${params.toString()}`, { // Remplacez l'URL par celle de votre API
+        fetch(`/api/v1/userprofile/?${params.toString()}`, {
             method: 'PATCH',
             credentials: 'include'
         })
@@ -88,6 +88,7 @@
             })
             .then(data => {
                 showToast("Profil mis à jour !", 'green');
+                document.getElementById('displayNameInfo').innerText = displayName
             })
             .catch(error => {
                 showToast("Erreur : " + error, 'red');
