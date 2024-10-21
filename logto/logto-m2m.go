@@ -115,3 +115,75 @@ func PatchUserProfile(sub string, payload interface{}) error {
 		return errors.New(resp.Status)
 	}
 }
+
+func VerifyUserPassword(sub string, password string) (bool, error) {
+	token, err := getAccessToken()
+	if err != nil {
+		return false, err
+	}
+
+	payload := []byte(`{"password":"` + password + `"}`)
+
+	endpoint, err := url.JoinPath(globals.Configuration.Logto.Endpoint, "/api/users/", sub, "/password/verify")
+	if err != nil {
+		return false, err
+	}
+	request, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(payload))
+	if err != nil {
+		return false, err
+	}
+	request.Header.Add("Authorization", "Bearer "+token)
+	request.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(request)
+	if err != nil {
+		return false, err
+	}
+	defer resp.Body.Close()
+
+	// Vérifier la réponse
+	if resp.StatusCode == http.StatusNoContent {
+		return true, nil
+	} else if resp.StatusCode == http.StatusUnprocessableEntity {
+		return false, nil
+	} else {
+		return false, errors.New(resp.Status)
+	}
+
+}
+
+func PatchUserPassword(sub string, password string) error {
+	token, err := getAccessToken()
+	if err != nil {
+		return err
+	}
+
+	payload := []byte(`{"password":"` + password + `"}`)
+
+	endpoint, err := url.JoinPath(globals.Configuration.Logto.Endpoint, "/api/users/", sub, "/password")
+	if err != nil {
+		return err
+	}
+	request, err := http.NewRequest("PATCH", endpoint, bytes.NewBuffer(payload))
+	if err != nil {
+		return err
+	}
+	request.Header.Add("Authorization", "Bearer "+token)
+	request.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(request)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Vérifier la réponse
+	if resp.StatusCode == http.StatusOK {
+		return nil
+	} else {
+		return errors.New(resp.Status)
+	}
+
+}

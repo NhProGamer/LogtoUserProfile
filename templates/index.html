@@ -11,23 +11,23 @@
 
 <div class="flex flex-col md:flex-row bg-white dark:bg-gray-800 shadow-lg rounded-lg max-w-6xl w-full">
     <!-- Sidebar -->
-    <div class="md:w-1/4 p-6 border-b md:border-r border-gray-200 dark:border-gray-700">
+    <div class="md:w-1/4 p-6 md:border-b border-r border-gray-200 dark:border-gray-700">
         <div class="flex flex-col items-center">
-            <img class="w-24 h-24 rounded-full" src="{{.profilePicture}}" alt="Profile Picture">
+            <img id="profileImagePreview" class="w-24 h-24 rounded-full" src="{{.profilePicture}}" alt="Profile Picture">
             <h1 id="displayNameInfo" class="mt-4 text-xl font-bold">{{.name}}</h1>
             <p class="text-gray-600 dark:text-gray-400">{{.username}}</p>
         </div>
         <nav class="mt-8">
             <ul class="space-y-2">
-                <li class="flex items-center space-x-3 bg-gray-300 dark:bg-gray-900 p-3 rounded-md">
+                <li id="profileButton" class="flex items-center space-x-3 bg-gray-300 dark:bg-gray-900 p-3 rounded-md" onclick="changeView('profile')">
                     <span>👤</span>
                     <p>Profile</p>
                 </li>
-                <li class="flex items-center space-x-3 bg-gray-100 dark:bg-gray-700 p-3 rounded-md">
+                <li id="securityButton" class="flex items-center space-x-3 bg-gray-100 dark:bg-gray-700 p-3 rounded-md" onclick="changeView('security')">
                     <span>🔒</span>
                     <p>Sécurité</p>
                 </li>
-                <li class="flex items-center space-x-3 bg-gray-100 dark:bg-gray-700 p-3 rounded-md">
+                <li id="connectionsButton" class="flex items-center space-x-3 bg-gray-100 dark:bg-gray-700 p-3 rounded-md">
                     <span>🌐</span>
                     <p>Connections</p>
                 </li>
@@ -35,10 +35,10 @@
         </nav>
     </div>
 
-    <!-- Main Content -->
-    <div class="md:w-3/4 p-6">
+    <!-- Profile -->
+    <div class="md:w-3/4 p-6" id="profileView">
         <h2 class="text-xl font-semibold">Modifier le profil utilisateur</h2>
-        <form class="mt-4 space-y-4">
+        <form id="profileForm" class="mt-4 space-y-4">
             <div>
                 <label for="displayName" class="block text-sm font-medium">Nom d'affichage</label>
                 <input type="text" id="displayName" name="displayName" class="mt-1 block w-full p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none" placeholder="{{.name}}" value="{{.name}}" required>
@@ -51,15 +51,52 @@
                 <label for="lastName" class="block text-sm font-medium">Nom de famille</label>
                 <input type="text" id="lastName" name="lastName" class="mt-1 block w-full p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none" placeholder="{{.familyName}}" value="{{.familyName}}" required>
             </div>
+            <!--<div>
+                <label for="profilePicture" class="block text-sm font-medium">Photo de profil</label>
+                <input type="file" id="profilePicture" name="profilePicture" accept="image/*" class="mt-1 block w-full p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none">
+            </div>-->
             <div class="flex justify-end mt-4">
                 <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Enregistrer les modifications</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Security -->
+    <div class="md:w-3/4 p-6 hidden" id="securityView">
+        <h2 class="text-xl font-semibold">Sécurité du compte</h2>
+        <form id="passwordForm" class="mt-4 space-y-4">
+            <div>
+                <label for="actualPassword" class="block text-sm font-medium">Mot de passe actuel</label>
+                <input type="password" id="actualPassword" name="actualPassword" class="mt-1 block w-full p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none" placeholder="" value="" required>
+            </div>
+            <div>
+                <label for="newPassword" class="block text-sm font-medium">Nouveau mot de passe</label>
+                <input type="password" id="newPassword" name="newPassword" class="mt-1 block w-full p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none" placeholder="" value="" required>
+            </div>
+            <div>
+                <label for="repeatedPassword" class="block text-sm font-medium">Répétez le mot de passe</label>
+                <input type="password" id="repeatedPassword" name="repeatedPassword" class="mt-1 block w-full p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none" placeholder="" value="" required>
+            </div>
+            <div class="flex justify-end mt-4">
+                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Changer le mot de passe</button>
             </div>
         </form>
     </div>
 </div>
 </body>
 <script>
-    document.querySelector('form').addEventListener('submit', function (event) {
+    let ActualView = 'profile'
+    function changeView(view) {
+        document.getElementById(ActualView + 'View').classList.add('hidden')
+        document.getElementById(view + 'View').classList.remove('hidden')
+
+        document.getElementById(ActualView + 'Button').classList.replace('bg-gray-300', 'bg-gray-100')
+        document.getElementById(ActualView + 'Button').classList.replace('dark:bg-gray-900', 'dark:bg-gray-700')
+        document.getElementById(view + 'Button').classList.replace('bg-gray-100', 'bg-gray-300')
+        document.getElementById(view + 'Button').classList.replace('dark:bg-gray-700', 'dark:bg-gray-900')
+        ActualView = view
+    }
+    document.getElementById('profileForm').addEventListener('submit', function (event) {
         event.preventDefault(); // Empêche le rechargement de la page
 
         // Récupère les valeurs des champs du formulaire
@@ -87,38 +124,84 @@
                 }
             })
             .then(data => {
-                showToast("Profil mis à jour !", 'green');
+                showToast("Profil mis à jour!", 'green');
                 document.getElementById('displayNameInfo').innerText = displayName
             })
             .catch(error => {
-                showToast("Erreur : " + error, 'red');
+                showToast("Erreur: " + error, 'red');
             });
     });
+
+    document.getElementById('passwordForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Empêche le rechargement de la page
+
+        // Récupère les valeurs des champs du formulaire
+        const actualPassword = document.getElementById('actualPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const repeatedPassword = document.getElementById('repeatedPassword').value;
+
+        if (newPassword !== repeatedPassword) {
+            showToast("Erreur : Les deux mots de passe ne sont pas les mêmes!", 'red');
+            return
+        }
+
+        // Crée l'objet de données à envoyer
+        const params = new URLSearchParams({
+            "oldPassword": actualPassword,
+            "newPassword": newPassword,
+        });
+
+        // Envoie une requête PATCH
+        fetch(`/api/v1/change-password/?${params.toString()}`, {
+            method: 'PATCH',
+            credentials: 'include'
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    response.text().then(res => console.log(res))
+                    throw new Error('Le mot de passe ne correspond pas!');
+                }
+            })
+            .then(data => {
+                showToast("Mot de passe mis à jour!", 'green');
+            })
+            .catch(error => {
+                showToast("Erreur: " + error, 'red');
+            });
+    });
+
+    /*document.getElementById('profilePicture').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('profileImagePreview').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });*/
 
     function showToast(message, color = 'green') {
         const toast = document.getElementById('toast');
         toast.textContent = message;
         toast.classList.remove('hidden');
 
-        // Définir la couleur d'accent
         const colorValue = {
-            'red' : 'shadow-[0_0_0_1px_rgba(255,99,71,1),0_0_100px_8px_rgba(255,99,71,0.2)]', // Couleur rouge
-            'green': 'shadow-[0_0_0_1px_rgba(144,238,144,1),0_0_100px_8px_rgba(144,238,144,0.2)]' // Couleur verte
+            'red': 'shadow-[0_0_0_1px_rgba(255,99,71,1),0_0_100px_8px_rgba(255,99,71,0.2)]',
+            'green': 'shadow-[0_0_0_1px_rgba(144,238,144,1),0_0_100px_8px_rgba(144,238,144,0.2)]'
         };
 
-        // Appliquer l'ombre personnalisée avec la couleur choisie
-        toast.classList.add(colorValue[color])
+        toast.classList.add(colorValue[color]);
 
-        // Fade in
         toast.style.opacity = '1';
 
-        // Fade out after a delay
         setTimeout(() => {
             toast.style.opacity = '0';
-            // Hide the toast after fading out
             setTimeout(() => {
                 toast.classList.add('hidden');
-                toast.classList.remove(colorValue[color])
+                toast.classList.remove(colorValue[color]);
             }, 500);
         }, 4500);
     }
