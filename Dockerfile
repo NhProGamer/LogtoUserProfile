@@ -1,5 +1,3 @@
-LABEL authors="nhpro"
-
 FROM golang:1.20-alpine AS build
 
 ARG TARGETARCH
