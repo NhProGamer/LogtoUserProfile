@@ -1,4 +1,4 @@
-FROM golang:1.20-alpine AS build
+FROM golang:1.23-alpine AS build
 
 ARG TARGETARCH
 ENV GO111MODULE=on \
@@ -10,6 +10,7 @@ WORKDIR /app
 COPY go.mod ./
 RUN go mod download
 COPY . .
+RUN go mod tidy
 RUN go build -o nebulogo .
 
 FROM alpine:latest
