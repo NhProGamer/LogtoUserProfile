@@ -16,7 +16,6 @@ RUN go build -o nebulogo .
 FROM alpine:latest
 WORKDIR /app
 COPY --from=build /app/nebulogo /app/nebulogo
-COPY ./template /app/template
 EXPOSE 80
 ENTRYPOINT ["/app/nebulogo"]
 # Build command: docker build --build-arg TARGETARCH=$(uname -m) -t nebulogo .
