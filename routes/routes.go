@@ -17,6 +17,9 @@ func RegisterRoutes(router *gin.Engine) {
 	userprofile := apiV1.Group("userprofile")
 	userprofile.GET("/", controllers.UserProfile)
 	userprofile.PATCH("/", controllers.UpdateUserProfile)
+	pfp := userprofile.Group("pfp")
+	pfp.POST("/", controllers.UploadPfp)
+	pfp.GET("/", controllers.GetPfp)
 
 	apiV1.PATCH("change-password", controllers.ChangePassword)
 }
