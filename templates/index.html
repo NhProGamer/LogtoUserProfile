@@ -187,6 +187,55 @@
         }
     });*/
 
+
+    document.getElementById("profileImagePreview").addEventListener("click", function () {
+        // Crée dynamiquement un input de type file
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "image/*";
+
+        // Déclenche l'ouverture du sélecteur de fichiers
+        fileInput.click();
+
+        // Écoute la sélection de fichier
+        fileInput.addEventListener("change", function () {
+            const file = fileInput.files[0]; // Récupère le fichier sélectionné
+
+            if (file) {
+                const formData = new FormData();
+                formData.append("file", file);
+
+                // Envoie le fichier via une requête POST
+                fetch("api/v1/userprofile/pfp/", {
+                    method: "POST",
+                    body: formData,
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            response.json().then(error => {throw new Error(error.error)})
+                        }
+                    })
+                    .then(data => {
+                        if (data) {
+                            showToast("Photo de profil mise a jour", 'green')
+                            img = document.getElementById("profileImagePreview")
+                            img.src = img.src + "&tmp=" + new Date().getTime()
+
+                        } else {
+                            showToast("Erreur du serveur", 'red')
+                        }
+                    })
+                    .catch(error => {
+                        showToast(error, 'red')
+                    });
+            }
+        });
+    });
+
+
+
     function showToast(message, color = 'green') {
         const toast = document.getElementById('toast');
         toast.textContent = message;

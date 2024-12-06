@@ -43,20 +43,17 @@ func UpdateUserProfile(ctx *gin.Context) {
 
 	if logtoClient.IsAuthenticated() {
 		var payload interface{}
-		avatar := ctx.DefaultQuery("avatar", "")
 		name := ctx.DefaultQuery("name", "")
 		givenName := ctx.DefaultQuery("given_name", "")
 		familyName := ctx.DefaultQuery("family_name", "")
 
 		if givenName == "" && familyName == "" {
 			payload = logto.PatchProfilePayloadLite{
-				Avatar: avatar,
-				Name:   name,
+				Name: name,
 			}
 		} else {
 			payload = logto.PatchProfilePayload{
-				Avatar: avatar,
-				Name:   name,
+				Name: name,
 				Profile: logto.ProfilePayload{
 					GivenName:  givenName,
 					FamilyName: familyName,

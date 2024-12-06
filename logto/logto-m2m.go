@@ -17,8 +17,8 @@ type ProfilePayload struct {
 
 type PatchProfilePayload struct {
 	Profile ProfilePayload `json:"profile,omitempty"`
-	Avatar  string         `json:"avatar,omitempty"`
-	Name    string         `json:"name,omitempty"`
+	//Avatar  string         `json:"avatar,omitempty"`
+	Name string `json:"name,omitempty"`
 }
 
 type PatchProfilePayloadLite struct {
