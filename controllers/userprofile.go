@@ -93,7 +93,7 @@ func GetPfp(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "profile picture not found"})
 		return
 	}
-	ctx.Header("Content-Type", "image/webp")
+	ctx.Header("Content-Type", "image/gif")
 	ctx.File(filePath)
 }
 func UploadPfp(ctx *gin.Context) {
